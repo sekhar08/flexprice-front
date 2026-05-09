@@ -1,5 +1,6 @@
-import 'tailwindcss/tailwind.css';
+import '../src/index.css';
 import type { Preview } from '@storybook/react';
+import { withProviders } from './withProviders';
 
 const preview: Preview = {
 	parameters: {
@@ -9,7 +10,13 @@ const preview: Preview = {
 				date: /Date$/i,
 			},
 		},
+		a11y: {
+			config: {
+				rules: [],
+			},
+		},
 	},
+	decorators: [withProviders],
 };
 
 export default preview;
