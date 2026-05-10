@@ -44,7 +44,7 @@ const DateRangePicker = ({
 	popoverContentClassName,
 }: Props) => {
 	const [open, setOpen] = useState(false);
-	const [selectedRange, setSelectedRange] = useState<{ from: Date; to: Date } | undefined>(undefined);
+	const [selectedRange, setSelectedRange] = useState<{ from: Date; to?: Date } | undefined>(undefined);
 	const [timezone, setTimezone] = useState<CalendarTimezone>('local');
 
 	const currentMonth = startOfMonth(new Date());
@@ -60,14 +60,19 @@ const DateRangePicker = ({
 
 	const handleSelect = useCallback(
 		(date: { from?: Date; to?: Date } | undefined) => {
-			if (!date) return;
+			if (!date || !date.from) {
+				setSelectedRange(undefined);
+				return;
+			}
 			if (date.from && date.to) {
 				const range = toRangeInZone(date.from, date.to);
 				setSelectedRange(range);
 				onChange({ startDate: range.from, endDate: range.to });
-			} else {
-				onChange({ startDate: date.from, endDate: date.to });
+				return;
 			}
+			// Partial selection — keep it in internal state so the calendar
+			// reflects the first click; do not propagate to the parent yet.
+			setSelectedRange({ from: date.from });
 		},
 		[onChange, toRangeInZone],
 	);
@@ -93,18 +98,18 @@ const DateRangePicker = ({
 		}
 	}, [startDate, endDate]);
 
-	const displayRange =
-		selectedRange?.from && selectedRange?.to
-			? {
-					from: toCalendarDisplayDate(selectedRange.from, timezone as DateTimezone),
-					to: toCalendarDisplayDate(selectedRange.to, timezone as DateTimezone),
-				}
-			: undefined;
+	const displayRange = selectedRange?.from
+		? {
+				from: toCalendarDisplayDate(selectedRange.from, timezone as DateTimezone),
+				to: selectedRange.to ? toCalendarDisplayDate(selectedRange.to, timezone as DateTimezone) : undefined,
+			}
+		: undefined;
 
-	const displayLabel =
-		selectedRange?.from && selectedRange?.to
+	const displayLabel = selectedRange?.from
+		? selectedRange.to
 			? `${formatDateInZone(selectedRange.from, timezone as DateTimezone)} - ${formatDateInZone(selectedRange.to, timezone as DateTimezone)}`
-			: placeholder;
+			: `${formatDateInZone(selectedRange.from, timezone as DateTimezone)} - …`
+		: placeholder;
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
