@@ -1,485 +1,179 @@
-<div align="center">
-  <img src="./assets/flexprice_logo.png" height="120" alt="Flexprice Logo"/>
-  
-  <h1>⚡️ Flexprice Frontend</h1>
-  
-  <p><strong>Usage-based metering & billing for developers</strong></p>
-  
-  <p>Build usage-based, credit-based, or hybrid pricing models with full control. Flexprice handles metering, pricing, and invoicing so you can focus on building, not billing.</p>
+# FlexPrice Frontend Intern Take-Home — Submission
 
-  <p>
-    <a href="https://docs.flexprice.io">Documentation</a> •
-    <a href="https://www.loom.com/share/60d8308781254fe0bc5be341501f9fd5">Demo</a> •
-    <a href="https://flexprice.io/">Website</a> •
-    <a href="https://www.linkedin.com/company/flexpriceio">LinkedIn</a>
-  </p>
+This document explains what was built, where to find it, and what was deliberately left out. The full assignment brief lives at [`assignment/flexprice_intern_assignment.md`](./assignment/flexprice_intern_assignment.md).
 
-  <p>
-    <a href="https://pkg.go.dev/github.com/flexprice/go-sdk">
-      <img src="https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white" alt="Go SDK"/>
-    </a>
-    <a href="https://pypi.org/project/flexprice">
-      <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python SDK"/>
-    </a>
-    <a href="https://www.npmjs.com/package/@flexprice/sdk">
-      <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" alt="JavaScript SDK"/>
-    </a>
-  </p>
-
-  <p>
-    <a href="https://github.com/flexprice/flexprice-front/releases">
-      <img src="https://img.shields.io/github/v/release/flexprice/flexprice-front?style=flat-square" alt="Latest Release"/>
-    </a>
-    <a href="https://github.com/flexprice/flexprice-front/issues">
-      <img src="https://img.shields.io/github/issues/flexprice/flexprice-front?style=flat-square" alt="GitHub Issues"/>
-    </a>
-    <a href="https://github.com/flexprice/flexprice-front/stargazers">
-      <img src="https://img.shields.io/github/stars/flexprice/flexprice-front?style=flat-square" alt="GitHub Stars"/>
-    </a>
-    <a href="https://github.com/flexprice/flexprice-front/network">
-      <img src="https://img.shields.io/github/forks/flexprice/flexprice-front?style=flat-square" alt="GitHub Forks"/>
-    </a>
-    <a href="https://github.com/flexprice/flexprice-front/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/flexprice/flexprice-front?style=flat-square" alt="License"/>
-    </a>
-  </p>
-</div>
-
-<h5 align="center">
-
-[Documentation](https://docs.flexprice.io) • [Demo](https://www.loom.com/share/60d8308781254fe0bc5be341501f9fd5) • [Website](https://flexprice.io/) • [LinkedIn](https://www.linkedin.com/company/flexpriceio)
-
-[![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)](https://pkg.go.dev/github.com/flexprice/go-sdk) [![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://pypi.org/project/flexprice) [![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)](https://www.npmjs.com/package/@flexprice/sdk) 
-
-## 📋 Table of Contents
-
-- [🏗️ Open Architecture](#-open-architecture)
-- [🚀 Quick Setup](#-quick-setup-one-click-development)
-- [🛠️ Manual Development Setup](#️-manual-development-setup)
-- [🏗️ Project Structure](#️-project-structure)
-- [🌐 Self-Hosting Guide](#-self-hosting-guide)
-- [📚 Available Scripts](#-available-scripts)
-- [🔧 Common Development Tasks](#-common-development-tasks)
-- [🔍 Troubleshooting](#-troubleshooting)
-- [📚 Documentation](#-documentation)
-- [🚀 Latest Releases](#-latest-releases)
-- [👨🏻‍💻 Let's Build Together!](#-lets-build-together-)
-- [🤝 Contributing](#-contributing)
-- [🆘 Need Help?](#-need-help)
-- [🔒 Security](#-security)
-- [📝 Changelog](#-changelog)
-- [📄 License](#-license)
+- **Branch:** `flexpay-assignment`
+- **Commit range:** `8a23cadb` → `3301ae12` (6 commits)
+- **Live Storybook:** https://flexprice-front-storybook-gamma.vercel.app
 
 ---
 
-## 🏗️ Open Architecture
-The Flexprice core (metering, credits, pricing, billing) has an open and composable design.
+## TL;DR
 
-<p align="center">
-  <img align="center" src="./assets/open-arch.jpg" alt="open architechture"/>
-</p>
+| Requirement | Status | Notes |
+|---|---|---|
+| Storybook stories for ≥15 components | ✅ Done | 6 atoms + 6 molecules + 3 organisms = **15** |
+| Story shape (Default + variants + Controls + Docs + interaction test) | ✅ Done | Play tests on every interactive atom + on `EmptyState` and `SearchBar` |
+| Challenge A — `useFilterStore` (Zustand + sessionStorage + URL fingerprint) | ❌ Not done | Approach sketched below |
+| Challenge B — Virtualised `DataTable` | ✅ Done | `VirtualizedDataTable` with 10,000-row demo, ~22 DOM rows |
+| Challenge C — `createQueryConfig` presets | ❌ Not done | Approach sketched below |
+| Tests — 3 utility + 2 component | ✅ Done | 5 test files added |
+| Vercel deploy of `npm run build-storybook` | ✅ Done | [flexprice-front-storybook-gamma.vercel.app](https://flexprice-front-storybook-gamma.vercel.app) |
 
-Your application, whether it's running backend APIs, AI agents, or custom workflows, can send usage data to Flexprice. You can directly stream data from data warehouses or analytics pipelines as well.
+---
 
-At the core, Flexprice processes this data in real time. We handle everything that usually ends up as custom logic built by developers. Our platform calculates pricing based on the customer’s plan, applies any prepaid or promotional credits, enforces feature limits, and generates accurate invoices automatically. Whether you're using seat-based subscriptions, usage-based pricing, or prepaid credit bundles, you can set up and iterate on your pricing model without writing billing infrastructure from scratch.
-
-After billing is computed, our platform connects to your existing tools for payments, CPQ, CRM, and accounting, ensuring billing information flows into the systems your business already uses. It can sync invoices to your payment processor, update customer data in your CRM, and push revenue numbers to your accounting tools.
-
-With this architecture, you get full control over how billing works inside your product, while saving your team from the complexity of maintaining it all.
-
-## ✨ Features
-
-- 🎯 **Usage Metering** - Real-time tracking of custom usage events
-- 💳 **Credit Management** - Prepaid and promotional credit systems
-- 📊 **Flexible Pricing** - Support for usage-based, subscription, and hybrid models
-- 🔧 **Feature Management** - Entitlements and usage limits per plan
-- 📄 **Automated Invoicing** - Clear, accurate invoices with real-time data
-- 🔌 **Easy Integration** - Simple SDKs for Go, Python, and JavaScript
-- 🏗️ **Self-Hostable** - Open source with full control over your infrastructure
-- 📈 **Real-time Analytics** - Comprehensive usage and billing insights
-
-## 🚀 Quick Setup (One-Click Development)
-
-[![Latest Release](https://img.shields.io/github/v/release/flexprice/flexprice-front?style=flat-square&label=Current%20Version)](https://github.com/flexprice/flexprice-front/releases)
-
-### Prerequisites
-
-- **Node.js** 16+ and npm/yarn
-- **Git** for version control
-- **VS Code** (recommended) or any modern editor
-- **Docker** (optional, for containerized development)
-
-### One-Click Setup Script
+## How to run locally
 
 ```bash
-# Clone the flexprice frontend repository
-git clone https://github.com/flexprice/flexprice-front
-cd flexprice-front
-
-# Run the automated setup script
-./setup
-```
-
-### Alternative: Install Latest Release
-
-```bash
-# Download and install the latest release
-curl -s https://api.github.com/repos/flexprice/flexprice-front/releases/latest | grep "browser_download_url.*tar.gz" | cut -d '"' -f 4 | wget -qi -
-tar -xzf flexprice-front-*.tar.gz
-cd flexprice-front-*
-./setup
-```
-
-The setup script will automatically:
-
-1. ✅ Set up environment variables
-2. ✅ Install all dependencies
-3. ✅ Build Docker image (if Docker is available)
-4. ✅ Start the development server
-5. ✅ Open your browser to `http://localhost:3000`
-
-## 🛠 Manual Development Setup
-
-1. **Clone & Install**
-
-```bash
-git clone https://github.com/flexprice/flexprice-front
-cd flexprice-front
 npm install
+npm run storybook        # http://localhost:6006
+npx vitest run           # one-shot test pass
 ```
 
-2. **Environment Setup**
+---
 
-```bash
-# Copy environment template
-cp .env.example .env
+## Approach & decisions
 
-# Configure these variables in .env.local:
-VITE_SUPABASE_URL=your-supabase-utl
+### 1. Build on the existing component tree, don't fork it
 
-VITE_SUPABASE_ANON_KEY=your-supabse-anon-key
+The repo already has `src/components/{atoms,molecules,organisms}` with shadcn/Radix-flavoured primitives in place. The assignment's tip #4 says "document existing atoms rather than re-implement," so:
 
-VITE_API_URL=http://localhost:8080/v1 or <your-backend-url>
+- **Atoms (6):** all six atom stories wrap existing components (`Button`, `Chip`, `Input`, `Select`, `Tooltip`, `Spinner`). Zero new atom source files — just `*.stories.tsx`.
+- **Molecules (6):** three stories wrap existing molecules (`MetricCard`, `Table`/DataTable, `DateRangePicker`); three are newly built because they didn't exist as discrete components (`InvoiceStatusBadge`, `UsageBar`, `SearchBar`).
+- **Organisms (3):** all newly built (`SidebarNav`, `PricingTierTable`, `EmptyState`) because the production app composes these inline rather than as reusable units.
 
-VITE_ENVIRONMENT=development
+This keeps the diff focused on documentation rather than parallel implementations a reviewer would have to mentally diff against the originals.
 
-```
+### 2. Standardised story shape
 
-3. **Start Development**
+Every story file follows the same pattern:
 
-```bash
-npm run dev
-```
+1. A **Default** export — happy-path props.
+2. **Variants** — meaningful visual states (sizes, loading, error, empty, disabled, etc.).
+3. **`argTypes`-driven Controls** so reviewers can tweak props live.
+4. **JSDoc** on the component itself, surfaced via Storybook autodocs.
+5. **A `play` function** for every interactive component. The atoms commit ships four (Button click, Button disabled-no-fire, Input typing onChange, Select option pick). The molecules and organisms commits add one for `SearchBar` (debounced cumulative onSearch) and one for `EmptyState` (CTA onClick fires).
 
-Visit `http://localhost:3000` to see your app running!
+### 3. Bug fix found while writing the DateRangePicker story
 
-## 🏗 Project Structure
+While building [`DateRangePicker.stories.tsx`](src/components/atoms/DateRangePicker/DateRangePicker.stories.tsx), the partial-selection state was wiping itself: clicking the first date triggered the props-sync `useEffect`, which reset internal state before the second click could land. Fixed in [`DateRangePicker.tsx`](src/components/atoms/DateRangePicker/DateRangePicker.tsx) by keeping partial picks in internal state and only firing `onChange` once both endpoints are chosen. The story switched from a single-popover range calendar to two side-by-side `DatePicker` primitives with `min`/`max` bounds derived from each other — the same pattern the production `CustomerAnalyticsTab` uses.
 
-```
-src/
-├── components/          # UI Components
-│   ├── atoms/          # Basic UI elements
-│   │   ├── Button/
-│   │   ├── Input/
-│   │   └── Card/
-│   ├── molecules/      # Composite components
-│   │   ├── Forms/
-│   │   ├── Charts/
-│   │   └── Tables/
-│   └── organisms/      # Complex UI sections
-│       ├── Dashboard/
-│       ├── Billing/
-│       └── Analytics/
-├── pages/              # Route components
-├── hooks/              # Custom React hooks
-├── store/              # State management
-├── utils/              # Helper functions
-├── models/             # TypeScript types
-└── core/              # Core business logic
-```
+### 4. Virtualisation choice
 
-## 🌐 Self-Hosting Guide
+For Challenge B we picked `@tanstack/react-virtual` over `react-window`:
 
-### Docker Deployment
+- It's headless, so the column API of [`VirtualizedDataTable`](src/components/molecules/Table/VirtualizedDataTable.tsx) matches the existing `FlexpriceTable` — a future production migration is "swap the import."
+- Supports both fixed and dynamic row heights out of the box.
+- No DOM coupling, no inline-style scaffolding to fight.
 
-1. **Build the Docker image**
+---
 
-```bash
-docker build -t flexprice-frontend .
-```
+## Component inventory
 
-2. **Run the container**
+### Atoms — 6
 
-```bash
-docker run -p 80:80 \
-  -e VITE_API_URL=your-api-url \
-  -e VITE_AUTH_DOMAIN=your-auth-domain \
-  flexprice-frontend
-```
+| Component | Story file | Coverage |
+|---|---|---|
+| `Button` | [`atoms/Button/Button.stories.tsx`](src/components/atoms/Button/Button.stories.tsx) | All variants (primary/secondary/ghost/danger), sizes (sm/md/lg), states (default/loading/disabled). Play tests: click, disabled-no-fire |
+| `Chip` (Badge) | [`atoms/Chip/Chip.stories.tsx`](src/components/atoms/Chip/Chip.stories.tsx) | Status variants for plan/invoice/subscription states |
+| `Input` | [`atoms/Input/Input.stories.tsx`](src/components/atoms/Input/Input.stories.tsx) | Text, number, label, error state, currency prefix. Play test: typing fires onChange |
+| `Select` | [`atoms/Select/Select.stories.tsx`](src/components/atoms/Select/Select.stories.tsx) | Single select, with search. Play test: option pick |
+| `Tooltip` | [`atoms/Tooltip/Tooltip.stories.tsx`](src/components/atoms/Tooltip/Tooltip.stories.tsx) | Informational, with delay |
+| `Spinner` | [`atoms/Spinner/Spinner.stories.tsx`](src/components/atoms/Spinner/Spinner.stories.tsx) | Loading state, sizes |
 
-### Manual Deployment
+### Molecules — 6
 
-1. **Build the application**
+| Component | Story file | Coverage |
+|---|---|---|
+| `MetricCard` | [`molecules/MetricCard.stories.tsx`](src/components/molecules/MetricCard.stories.tsx) | KPI card — label, value, trend indicator |
+| `DataTable` (Table) | [`molecules/Table/Table.stories.tsx`](src/components/molecules/Table/Table.stories.tsx) | 8 stories: title + Filter/Sort toolbar, sortable columns, loading skeleton, empty state, pagination, row clicks, flat variant. Wired to existing `SortDropdown` molecule |
+| `InvoiceStatusBadge` | [`molecules/InvoiceStatusBadge/InvoiceStatusBadge.stories.tsx`](src/components/molecules/InvoiceStatusBadge/InvoiceStatusBadge.stories.tsx) | Maps the 4 `INVOICE_STATUS` values to flat coloured chips, matching production invoice tables |
+| `UsageBar` | [`molecules/UsageBar/UsageBar.stories.tsx`](src/components/molecules/UsageBar/UsageBar.stories.tsx) | Progress with primary/amber/destructive bands keyed off percent used, plus an unlimited indicator |
+| `DateRangePicker` | [`atoms/DateRangePicker/DateRangePicker.stories.tsx`](src/components/atoms/DateRangePicker/DateRangePicker.stories.tsx) | Two side-by-side `DatePicker` primitives with cross-bounded `min`/`max`. Toggle-clear comes from react-day-picker's deselect-on-reclick |
+| `SearchBar` | [`molecules/SearchBar/SearchBar.stories.tsx`](src/components/molecules/SearchBar/SearchBar.stories.tsx) | Magnifier prefix, clear button, debounced `onSearch` (300ms default). Play test asserts cumulative debounced value |
 
-```bash
-npm run build
-```
+### Organisms — 3
 
-2. **Serve the static files**
+| Component | Story file | Coverage |
+|---|---|---|
+| `SidebarNav` | [`organisms/SidebarNav/SidebarNav.stories.tsx`](src/components/organisms/SidebarNav/SidebarNav.stories.tsx) | Composes shadcn `Sidebar` primitives — collapsible, active-route highlighting, icon+label items, header/footer slots. Story wires it into a `SidebarProvider`/`SidebarInset` shell with a `UserChip` footer that opens a Settings/Logout dropdown |
+| `PricingTierTable` | [`organisms/PricingTierTable/PricingTierTable.stories.tsx`](src/components/organisms/PricingTierTable/PricingTierTable.stories.tsx) | Pure-display table for tiered / graduated / volume pricing rules with optional row highlighting |
+| `EmptyState` | [`organisms/EmptyState/EmptyState.stories.tsx`](src/components/organisms/EmptyState/EmptyState.stories.tsx) | Canonical icon + headline + subtext + CTA placeholder. Play test asserts CTA `onClick` fires |
 
-```bash
-# Using nginx
-cp nginx.conf /etc/nginx/conf.d/flexprice.conf
-nginx -s reload
+---
 
-# Or using serve
-npx serve -s dist
-```
+## Advanced challenges
 
-## 📚 Available Scripts
+### A — Filter persistence (NOT IMPLEMENTED)
 
-```bash
-# Development
-npm run dev           # Start development server
-npm run build        # Build for production
-npm run preview      # Preview production build
+What the assignment asks for: a `useFilterStore` Zustand hook that persists per-page filter state in `sessionStorage` keyed by route, exposes `setFilter` / `resetFilters` / `getFilters`, and syncs only a shallow fingerprint (hash or count) to the URL — plus a story showing `DataTable` wired to it.
 
-# Code Quality
-npm run lint        # Run ESLint
-npm run lint:fix    # Fix ESLint errors
-npm run format      # Format with Prettier
-```
+Approach we'd take with another day:
 
-## 🔧 Common Development Tasks
+- A Zustand store created per route via a factory: `createFilterStore('invoices')` → returns a hook bound to the `filters:invoices` storage key.
+- Use Zustand's `persist` middleware with `createJSONStorage(() => sessionStorage)` so the persistence is declarative, not hand-rolled.
+- A small `useFilterUrlFingerprint()` hook that hashes the active filter object (e.g. `xxhash` or a simple stringify+djb2) and writes a single `?f=<hash>` query param via `useSearchParams`. On mount, if the URL hash matches the stored fingerprint we trust sessionStorage; if it doesn't, we drop the stored filters and start fresh — bookmarkability without the per-render serialise cost.
+- Demo story: `DataTable` decorated with a `MemoryRouter` and the store, plus a "reset" button.
 
-### Adding New Features
+### B — Virtualised list (DONE)
 
-1. Create a feature branch:
+- Component: [`molecules/Table/VirtualizedDataTable.tsx`](src/components/molecules/Table/VirtualizedDataTable.tsx)
+- Stories: [`VirtualizedDataTable.stories.tsx`](src/components/molecules/Table/VirtualizedDataTable.stories.tsx)
+  - **Fixed-height demo:** 10,000 mock rows, scrolls smoothly.
+  - **Variable-height demo:** 2,000 rows with dynamic row sizing.
+- Built on `@tanstack/react-virtual` with overscan 10 and a sticky header. The column API matches the non-virtualised `FlexpriceTable` so swapping is a one-line change. Regardless of dataset size, the DOM only holds ~22 rendered rows (viewport + overscan).
 
-```bash
-git checkout -b feat/new-feature
-```
+### C — Configurable TanStack Query caching (NOT IMPLEMENTED)
 
-2. Create component structure:
+What the assignment asks for: a `createQueryConfig` utility with a global default of `staleTime: 5min` / `gcTime: 10min`, declarative per-call overrides, and `REALTIME` / `DEFAULT` / `STATIC` presets — plus a story or vitest spec documenting the behaviour.
 
-```bash
-mkdir -p src/components/organisms/NewFeature
-touch src/components/organisms/NewFeature/index.tsx
-touch src/components/organisms/NewFeature/NewFeature.test.tsx
-```
+Approach we'd take with another day:
 
-3. Add route (if needed):
+```ts
+export const QUERY_PRESETS = {
+  REALTIME: { staleTime: 0,            gcTime: 60_000 },
+  DEFAULT:  { staleTime: 5 * 60_000,   gcTime: 10 * 60_000 },
+  STATIC:   { staleTime: 30 * 60_000,  gcTime: 60 * 60_000 },
+} as const;
 
-```tsx
-// src/core/routes/Routes.tsx
-import NewFeature from '@/components/organisms/NewFeature'
-
-// Add to routes array
-{
-  path: '/new-feature',
-  element: <NewFeature />
+export function createQueryConfig<T extends UseQueryOptions>(
+  preset: keyof typeof QUERY_PRESETS,
+  overrides?: Partial<T>,
+): Partial<T> {
+  return { ...QUERY_PRESETS[preset], ...overrides } as Partial<T>;
 }
 ```
 
-### Styling Components
-
-We use Tailwind CSS with custom configurations:
-
-```tsx
-// Example component with Tailwind
-const Button = ({ children }) => <button className='px-4 py-2 bg-primary hover:bg-primary-dark rounded-md'>{children}</button>;
-```
-
-## 🔍 Troubleshooting
-
-### Common Issues
-
-1. **Build Failures**
-
-```bash
-# Clear dependencies and cache
-rm -rf node_modules
-rm -rf .vite
-npm install
-```
-
-2. **Stale Development Server**
-
-```bash
-# Reset development server
-rm -rf node_modules
-rm -rf .vite
-npm install
-npm run dev
-```
-
-## 📚 Documentation
-
-Our comprehensive documentation covers all aspects of the FlexPrice frontend:
-
-### Getting Started
-
-- [Getting Started Guide](docs/getting-started.md) - Quick setup and first steps
-- [Project Structure](docs/project-structure.md) - Understanding the codebase organization
-- [Conventions](docs/conventions.md) - Coding standards and best practices
-
-### Development Guides
-
-- [Component Guidelines](docs/component-guidelines.md) - Building and maintaining UI components
-- [State Management](docs/state-management.md) - Managing application state with Zustand and Context
-- [API Integration](docs/api-integration.md) - Working with the backend API
-- [Onboarding Guide](docs/onboarding.md) - New developer onboarding process
-
-### Additional Resources
-
-<!-- - [FAQ](docs/FAQ.md) - Common questions and answers -->
-
-- [Flexprice Docs](https://docs.flexprice.io) - Documenttation for Flexprice sdk and Apis
-- [Contributing Guide](docs/getting-started.md) - How to contribute to the project
-
-## 🚀 Latest Releases
-
-<div align="center">
-  <a href="https://github.com/flexprice/flexprice-front/releases">
-    <img src="https://img.shields.io/github/v/release/flexprice/flexprice-front?include_prereleases&style=for-the-badge&label=Latest%20Release" alt="Latest Release"/>
-  </a>
-  <a href="https://github.com/flexprice/flexprice-front/releases">
-    <img src="https://img.shields.io/github/release-date/flexprice/flexprice-front?style=for-the-badge&label=Release%20Date" alt="Release Date"/>
-  </a>
-</div>
-
-### 📦 Download Latest Release
-
-```bash
-# Download the latest release
-curl -s https://api.github.com/repos/flexprice/flexprice-front/releases/latest | grep "browser_download_url.*tar.gz" | cut -d '"' -f 4 | wget -qi -
-
-# Or clone the latest release
-git clone --depth 1 --branch $(curl -s https://api.github.com/repos/flexprice/flexprice-front/releases/latest | grep "tag_name" | cut -d '"' -f 4) https://github.com/flexprice/flexprice-front.git
-```
-
-### 🔄 Release History
-
-[![GitHub Release](https://img.shields.io/github/release-date/flexprice/flexprice-front?style=flat-square)](https://github.com/flexprice/flexprice-front/releases)
-[![GitHub Releases](https://img.shields.io/github/downloads/flexprice/flexprice-front/total?style=flat-square)](https://github.com/flexprice/flexprice-front/releases)
-[![GitHub All Releases](https://img.shields.io/github/downloads/flexprice/flexprice-front/total?style=flat-square&label=Total%20Downloads)](https://github.com/flexprice/flexprice-front/releases)
-
-## 👨🏻‍💻 Let's Build Together! 👩🏻‍💻
-
-Whether you're a newbie coder or a wizard 🧙‍♀️, your perspective is golden. Take a peek at our:
-
-📜 [Contribution Guidelines](CONTRIBUTING.md)
-
-🏗️ [Local Development Setup](docs/getting-started.md)
-
-❤️ [Code of Conduct](code_of_conduct.md)
-
-## Contributors
-
-<a href="https://github.com/flexprice/flexprice-front/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=flexprice/flexprice-front" />
-</a>
-
-<!-- ## Repo Activity -->
-
-<!-- ![Alt](https://repobeats.axiom.co/api/embed/4d6e208eab20ff0615787615c4fa022591adfa6b.svg 'Repobeats analytics image') -->
-
-## 🤝 Contributing
-
-We welcome contributions from the community! Here's how you can help:
-
-### 🚀 Quick Start
-
-1. **Fork** the repository
-2. **Clone** your fork: `git clone https://github.com/flexprice/flexprice-front.git`
-3. **Create** a feature branch: `git checkout -b feat/amazing-feature`
-4. **Make** your changes
-5. **Commit** with a clear message: `git commit -m "Add amazing feature"`
-6. **Push** to your branch: `git push origin feat/amazing-feature`
-7. **Open** a Pull Request
-
-### 📋 Contribution Types
-
-- 🐛 **Bug fixes** - Help us squash bugs
-- ✨ **New features** - Add functionality that others can use
-- 📚 **Documentation** - Improve our docs and guides
-- 🎨 **UI/UX improvements** - Make the interface better
-- ⚡ **Performance** - Optimize code and improve speed
-- 🧪 **Tests** - Add or improve test coverage
-
-### 🔍 Before You Start
-
-- Check existing [issues](https://github.com/flexprice/flexprice-front/issues) and [discussions](https://github.com/flexprice/flexprice-front/discussions)
-- Read our [Contributing Guide](CONTRIBUTING.md) for detailed guidelines
-- Follow our [Code of Conduct](code_of_conduct.md)
-- Ensure your code follows our [coding standards](docs/conventions.md)
-
-### 💡 Need Help?
-
-- 💬 Join our [Discussions](https://github.com/flexprice/flexprice-front/discussions)
-- 📧 Email us at dev@flexprice.io
-- 🐛 Report issues via [GitHub Issues](https://github.com/flexprice/flexprice-front/issues)
-
-## 🆘 Need Help?
-
-<!-- - Join our [Discord Community](https://discord.gg/flexprice) -->
-
-- 📧 Email: support@flexprice.io
-- 🐛 [Report Issues](https://github.com/flexprice/flexprice-front/issues)
-- 💬 [Discussions](https://github.com/flexprice/flexprice-front/discussions)
-<!-- - Check our [FAQ](docs/FAQ.md) -->
-
-## 🔒 Security
-
-We take security seriously. If you discover a security vulnerability, please follow these steps:
-
-1. **Do not** open a public issue
-2. Email us at security@flexprice.io
-3. Include a detailed description of the vulnerability
-4. We'll respond within 48 hours
-
-For more information, see our [Security Policy](SECURITY.md).
-
-## 📝 Changelog
-
-We maintain a detailed changelog of all notable changes to this project. See our [CHANGELOG.md](CHANGELOG.md) for the complete history.
-
-### 🔄 Dynamic Release Information
-
-<div align="center">
-  <a href="https://github.com/flexprice/flexprice-front/releases">
-    <img src="https://img.shields.io/github/v/release/flexprice/flexprice-front?include_prereleases&style=for-the-badge&label=Latest%20Release" alt="Latest Release"/>
-  </a>
-  <a href="https://github.com/flexprice/flexprice-front/releases">
-    <img src="https://img.shields.io/github/release-date/flexprice/flexprice-front?style=for-the-badge&label=Released" alt="Release Date"/>
-  </a>
-</div>
-
-### 📋 Recent Updates
-
-```bash
-# Get latest release info
-curl -s https://api.github.com/repos/flexprice/flexprice-front/releases/latest | jq '.tag_name, .published_at, .body'
-```
-
-### 🏷️ All Releases
-
-[![GitHub Releases](https://img.shields.io/github/release-date/flexprice/flexprice-front?style=flat-square)](https://github.com/flexprice/flexprice-front/releases)
-[![GitHub All Releases](https://img.shields.io/github/downloads/flexprice/flexprice-front/total?style=flat-square&label=Total%20Downloads)](https://github.com/flexprice/flexprice-front/releases)
-
-## 📄 License
-
-This project is licensed under the [AGPLv3 License](LICENSE) - see the [LICENSE](LICENSE) file for details.
-
-Flexprice follows an "Open Core" model where the core technology is fully open source, while some enterprise features may require a commercial license.
+- Set the `DEFAULT` preset on the root `QueryClient` so callers that don't opt in still get sane behaviour.
+- A vitest spec uses `vi.useFakeTimers()` + a mock fetcher to assert that `staleTime: 0` re-fetches on remount and `STATIC` does not.
+- Plan definitions, currency/locale lists → `STATIC`. Invoices, usage counters → `REALTIME`. Everything else → `DEFAULT`.
 
 ---
 
-<div align="center">
-  <p>Made with ❤️ by the <a href="https://flexprice.io">FlexPrice Team</a></p>
-  <p>
-    <a href="https://github.com/flexprice/flexprice-front/stargazers">⭐ Star us on GitHub</a> •
-    <a href="https://twitter.com/flexpriceio">🐦 Follow us on Twitter</a> •
-    <a href="https://www.linkedin.com/company/flexpriceio">💼 Connect on LinkedIn</a>
-  </p>
-</div>
+## Tests (Step 4)
+
+Five files committed in `3301ae12`:
+
+- [`src/utils/common/format_number.test.ts`](src/utils/common/format_number.test.ts) — currency formatting (cents → display, locale, zero/negative cases).
+- [`src/utils/common/format_chips.test.ts`](src/utils/common/format_chips.test.ts) — status-string-to-display-label mapping.
+- [`src/utils/common/formatBillingPeriod.test.ts`](src/utils/common/formatBillingPeriod.test.ts) — billing-period (DAILY/WEEKLY/MONTHLY/...) → human label.
+- [`src/components/molecules/MetricCard.test.tsx`](src/components/molecules/MetricCard.test.tsx) — render test: label, value, trend up/down/flat.
+- [`src/components/molecules/InvoiceStatusBadge/InvoiceStatusBadge.test.tsx`](src/components/molecules/InvoiceStatusBadge/InvoiceStatusBadge.test.tsx) — render test: each `INVOICE_STATUS` value renders the right colour + label.
+
+Run with `npx vitest run`.
+
+---
+
+## Repo hygiene
+
+- Branch: `flexpay-assignment`. Six commits, conventional-commits style, linear history.
+- `storybook-static/` is gitignored ([`8a23cadb`](https://github.com/`)) — Storybook builds get deployed to Vercel separately, no need to track them.
+
+---
+
+## Outstanding work
+
+If we had another day on this, in priority order:
+
+1. **Challenge A** — `useFilterStore` per the sketch above. Highest perceived value because the assignment calls it out as a real pain point in the production app.
+2. **Challenge C** — `createQueryConfig` + presets + vitest spec. Smaller in scope than A; worth doing for the full advanced-challenge sweep.
